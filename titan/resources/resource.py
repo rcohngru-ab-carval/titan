@@ -14,7 +14,7 @@ from ..enums import AccountEdition, DataType, ParseableEnum, ResourceType
 from ..identifiers import URN
 from ..lifecycle import create_resource, drop_resource
 from ..props import Props as ResourceProps
-from ..parse import _parse_create_header, _parse_props, _resolve_resource_class, parse_identifier
+from ..parse import _parse_create_header, _parse_grant, _parse_props, _parse_resource_type_from_create, parse_identifier
 from ..resource_name import ResourceName
 from ..resource_tags import ResourceTags
 from ..scope import (
@@ -209,11 +209,9 @@ class Resource(metaclass=_Resource):
     def from_sql(cls, sql):
         resource_cls = cls
         if resource_cls == Resource:
-            # FIXME: we need to change the way we handle polymorphic resources
-            # make a new function called _parse_resource_type_from_create
-            # resource_cls = Resource.classes[_resolve_resource_class(sql)]
-            # raise NotImplementedError
-            resource_type = _resolve_resource_class(sql)
+            # TODO: does not support polymorphic resources
+            resource_type = _parse_resource_type_from_create(sql)
+            resource_cls = Resource.resolve_resource_cls(resource_type, data={})
             scope = RESOURCE_SCOPES[resource_type]
         else:
             resource_type = resource_cls.resource_type

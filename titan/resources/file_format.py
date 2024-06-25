@@ -567,7 +567,7 @@ class CSVFileFormat(ResourceNameTrait, Resource):
 
 #     @classmethod
 #     def from_sql(cls, sql):
-#         resource_cls = Resource.classes[_resolve_resource_class(sql)]
+#         resource_cls = Resource.classes[_parse_resource_type_from_create(sql)]
 #         return resource_cls.from_sql(sql)
 
 FileFormatMap = {

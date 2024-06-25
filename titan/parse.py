@@ -286,34 +286,11 @@ def _resolve_notification_integration(sql):
     #     return "aws_outbound_notification_integration"
 
 
-def _resolve_resource_class(sql):
+def _parse_resource_type_from_create(sql):
     create_header = CREATE + pp.Opt(OR_REPLACE) + pp.Opt(TEMPORARY) + pp.Opt(TRANSIENT) + pp.Opt(SECURE)
     sql = _consume_tokens(create_header, sql)
 
-    lexicon = Lexicon(
-        {
-            "ALERT": ResourceType.ALERT,
-            "DATABASE": ResourceType.DATABASE,
-            "DYNAMIC TABLE": ResourceType.DYNAMIC_TABLE,
-            "EXTERNAL FUNCTION": ResourceType.EXTERNAL_FUNCTION,
-            "FILE FORMAT": ResourceType.FILE_FORMAT,
-            "NOTIFICATION INTEGRATION": ResourceType.NOTIFICATION_INTEGRATION,
-            "PIPE": ResourceType.PIPE,
-            "RESOURCE MONITOR": ResourceType.RESOURCE_MONITOR,
-            "ROLE": ResourceType.ROLE,
-            "SCHEMA": ResourceType.SCHEMA,
-            "SEQUENCE": ResourceType.SEQUENCE,
-            "STAGE": ResourceType.STAGE,
-            "STORAGE INTEGRATION": ResourceType.STORAGE_INTEGRATION,
-            "STREAM": ResourceType.STREAM,
-            "TABLE": ResourceType.TABLE,
-            "TAG": ResourceType.TAG,
-            "TASK": ResourceType.TASK,
-            "USER": ResourceType.USER,
-            "VIEW": ResourceType.VIEW,
-            "WAREHOUSE": ResourceType.WAREHOUSE,
-        }
-    )
+    lexicon = Lexicon({en.value: en for en in ResourceType})
 
     try:
         resource_type = convert_match(lexicon, sql)
